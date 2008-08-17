@@ -26,4 +26,26 @@ describe RB232::Port do
 
   end
 
+  describe "created with default options" do
+    before :each do
+      @port = RB232::Port.new
+    end
+
+    it "should have a baud rate of 2400" do
+      @port.baud_rate.should be(2400)
+    end
+
+  end
+
+  describe "created with non-default options" do
+    before :each do
+      @port = RB232::Port.new(:baud_rate => 19200)
+    end
+
+    it "should have a baud rate of 19200" do
+      @port.baud_rate.should be(19200)
+    end
+
+  end
+
 end
