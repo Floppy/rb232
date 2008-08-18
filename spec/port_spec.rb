@@ -116,4 +116,24 @@ describe RB232::Port do
 
   end
 
+  describe "reading from a device" do
+
+    before :each do
+      @port = RB232::Port.new(TEST_PORT)
+    end
+
+    it "should support reading a specified number of bytes" do
+      data = @port.read_bytes(10)
+      data.is_a?(Array).should be_true
+      data.size.should == 10
+    end
+
+    it "should support reading a specified number of characters into a string" do
+      data = @port.read_string(10)
+      data.is_a?(String).should be_true
+      data.size.should == 10
+    end
+
+  end
+
 end

@@ -225,3 +225,30 @@ VALUE rb232_port_get_stop_bits(VALUE self) {
     /* Return baud rate */
     return rb_uint_new(get_port_data(self)->stop_bits);
 }
+
+/* Read raw data from port */
+int rb232_port_read(VALUE self, char* buffer, VALUE count) {
+    int bytes_to_read = NUM2INT(count);
+    if (bytes_to_read > 255)
+        rb_raise(rb_eArgError, "can't read more than 255 bytes at once");
+    return read(get_port_data(self)->port_handle, buffer, bytes_to_read);
+}
+
+/*     def read_bytes(count) */
+VALUE rb232_port_read_bytes(VALUE self, VALUE count) {
+    char buffer[256];
+    int bytes_read = rb232_port_read(self, buffer, count);
+    VALUE data = rb_ary_new();
+    int i;
+    for (i=0; i<bytes_read; i++) {
+        rb_ary_push(data, INT2NUM(buffer[i]));
+    }
+}
+
+/*     def read_string(count) */
+VALUE rb232_port_read_string(VALUE self, VALUE count) {
+    char buffer[256];
+    int bytes_read = rb232_port_read(self, buffer, count);
+    buffer[bytes_read] = 0;
+    return rb_str_new2(buffer);
+}

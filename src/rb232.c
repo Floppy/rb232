@@ -16,4 +16,6 @@ void Init_rb232() {
     rb_define_method(RB232_Port, "data_bits", rb232_port_get_data_bits, 0);
     rb_define_method(RB232_Port, "parity", rb232_port_get_parity, 0);
     rb_define_method(RB232_Port, "stop_bits", rb232_port_get_stop_bits, 0);
+    rb_define_method(RB232_Port, "read_bytes", rb232_port_read_bytes, 1);
+    rb_define_method(RB232_Port, "read_string", rb232_port_read_string, 1);
 }

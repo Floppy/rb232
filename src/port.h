@@ -26,3 +26,9 @@ VALUE rb232_port_get_parity(VALUE self);
 
 /*     def stop_bits */
 VALUE rb232_port_get_stop_bits(VALUE self);
+
+/*     def read_bytes(count) */
+VALUE rb232_port_read_bytes(VALUE self, VALUE count);
+
+/*     def read_string(count) */
+VALUE rb232_port_read_string(VALUE self, VALUE count);
