@@ -16,6 +16,14 @@ You may ask, why not just use ruby-serialport? Mainly because the GPL license
 it is under is too restrictive for my purposes. This code is under the MIT
 license, so you can do anything you like with it.
 
+== INSTALLATION
+
+1) Enable gems from github, if you haven't already done so (rubygems >= 1.2):
+    > sudo gem sources -a http://gems.github.com
+
+2) Install gem
+    > sudo gem install Floppy-rb232
+
 == STATUS
 
 Currently you can read from a serial port, but not write back. The code is only 
@@ -37,4 +45,5 @@ You can provide alternative settings when you create a new port:
                                     :parity => true, 
                                     :stop_bits => 2)
 
-See spec/port_spec.rb for more details.
+See http://github.com/Floppy/rb232/tree/master/spec/port_spec.rb for more
+details.
