@@ -4,31 +4,43 @@ describe RB232::Port do
 
   describe "upon creation" do
 
-    it "can be created with default options" do
-      RB232::Port.new.should_not be_nil
-    end
-
-    it "can be created with a hash of options" do
-      RB232::Port.new({}).should_not be_nil
-    end
-
-    it "takes only one argument" do
+    it "cannot be created without a port name" do
       lambda {
-        RB232::Port.new({},{})
-      }.should raise_error(ArgumentError, "wrong number of arguments (must be 0 or 1)")
+        RB232::Port.new()
+      }.should raise_error(ArgumentError, "wrong number of arguments (must be 1 or 2)")
     end
 
-    it "ensures that argument is a hash" do
+    it "can be created with port name only" do
+      RB232::Port.new('/dev/ttyS0').should_not be_nil
+    end
+
+    it "can be created with port name and a hash of options" do
+      RB232::Port.new('/dev/ttyS0', {}).should_not be_nil
+    end
+
+    it "takes only two arguments" do
       lambda {
-        RB232::Port.new("hello")
-      }.should raise_error(ArgumentError, "argument must be a hash")
+        RB232::Port.new('',{},{})
+      }.should raise_error(ArgumentError, "wrong number of arguments (must be 1 or 2)")
+    end
+
+    it "ensures that first argument is a string" do
+      lambda {
+        RB232::Port.new({})
+      }.should raise_error(TypeError, "first argument must be a string (port name)")
+    end
+
+    it "ensures that second argument is a hash" do
+      lambda {
+        RB232::Port.new('/dev/ttyS0', "hello")
+      }.should raise_error(TypeError, "second argument must be a hash (port options)")
     end
 
   end
 
   describe "created with default options" do
     before :each do
-      @port = RB232::Port.new
+      @port = RB232::Port.new('/dev/ttyS0')
     end
 
     it "should have a baud rate of 2400" do
@@ -51,7 +63,7 @@ describe RB232::Port do
 
   describe "created with non-default options" do
     before :each do
-      @port = RB232::Port.new(:baud_rate => 19200, :data_bits => 7, :parity => true, :stop_bits => 2)
+      @port = RB232::Port.new('/dev/ttyS0', :baud_rate => 19200, :data_bits => 7, :parity => true, :stop_bits => 2)
     end
 
     it "should have a baud rate of 19200" do

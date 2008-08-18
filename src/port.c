@@ -25,9 +25,9 @@ VALUE rb232_port_alloc(VALUE klass) {
 }
 
 /*
- * Object initialization. Takes a hash of port options.
+ * Object initialization. Takes a port name and a hash of port options.
  */
-VALUE rb232_port_initialize_with_options(VALUE self, VALUE options) {
+VALUE rb232_port_initialize_with_options(VALUE self, VALUE port, VALUE options) {
     /* Get port data */
     struct RB232_Port_Data *port_data;
     Data_Get_Struct(self, struct RB232_Port_Data, port_data);
@@ -42,20 +42,34 @@ VALUE rb232_port_initialize_with_options(VALUE self, VALUE options) {
 
 /*
  * This function implements a default argument for initialize().
- * Equivalent Ruby would be def initialize(options = {}).
+ * Equivalent Ruby would be def initialize(port, options = {}).
  * This function calls the _with_options version, providing an empty
  * hash if one is not passed in.
  */
 VALUE rb232_port_initialize(int argc, VALUE* argv, VALUE self) {
-    if (argc == 0)
-        return rb232_port_initialize_with_options(self, rb_hash_new());
-    else if (argc == 1)
-        if (!rb_obj_is_kind_of(argv[0], rb_cHash))
-            rb_raise(rb_eArgError, "argument must be a hash");
-        else
-            return rb232_port_initialize_with_options(self, argv[0]);
+    /* Only allow 1 or 2 arguments */
+    if (argc == 0 || argc >= 3) {
+        rb_raise(rb_eArgError, "wrong number of arguments (must be 1 or 2)");
+        return Qnil;
+    }
+    /* Get port name */
+    VALUE port = Qnil;
+    if (!rb_obj_is_kind_of(argv[0], rb_cString))
+        rb_raise(rb_eTypeError, "first argument must be a string (port name)");
     else
-        rb_raise(rb_eArgError, "wrong number of arguments (must be 0 or 1)");
+        port = argv[0];
+    /* Get options */
+    VALUE options = Qnil;
+    if (argc == 1)
+        options = rb_hash_new();
+    else {
+        if (!rb_obj_is_kind_of(argv[1], rb_cHash))
+            rb_raise(rb_eTypeError, "second argument must be a hash (port options)");
+        else
+            options = argv[1];
+    }
+    /* Call real initialize function */
+    return rb232_port_initialize_with_options(self, port, options);
 }
 
 /*     def baud_rate */
