@@ -19,5 +19,23 @@ license, so you can do anything you like with it.
 
 == STATUS
 
-You can create a RB232::Port object and set options, but nothing much else.
-We don't do any actual talking to the hardware yet. Watch this space!
+Currently you can read from a serial port, but not write back. The code is only 
+tested on Linux - other unixes *may* work, Mac OSX *might* be ok, but Windows
+is right out for now. Watch this space for further developments!
+
+== USAGE
+
+The following code will read a 10-character string from the specified port,
+using the default port settings (9600/8/n/1)
+
+      @port = RB232::Port.new('/dev/ttyUSB0')
+      message = @port.read_string(10)
+
+You can provide alternative settings when you create a new port:
+
+      RB232::Port.new('/dev/ttyS0', :baud_rate => 19200, 
+                                    :data_bits => 7, 
+                                    :parity => true, 
+                                    :stop_bits => 2)
+
+See spec/port_spec.rb for more details.
