@@ -16,6 +16,13 @@ struct RB232_Port_Data {
     int stop_bits;
 };
 
+/* Helper for accessing port data */
+struct RB232_Port_Data* get_port_data(VALUE self) {
+    struct RB232_Port_Data *port_data;
+    Data_Get_Struct(self, struct RB232_Port_Data, port_data);
+    return port_data;
+};
+
 /*
  * Port data deallocation
  */
@@ -39,8 +46,7 @@ VALUE rb232_port_alloc(VALUE klass) {
  */
 VALUE rb232_port_initialize_with_options(VALUE self, VALUE port, VALUE options) {
     /* Get port data */
-    struct RB232_Port_Data *port_data;
-    Data_Get_Struct(self, struct RB232_Port_Data, port_data);
+    struct RB232_Port_Data *port_data = get_port_data(self);
     /* Store port name */
     int port_name_len = RSTRING(port)->len;
     port_data->port_name = malloc(port_name_len + 1);
@@ -84,38 +90,26 @@ VALUE rb232_port_initialize(int argc, VALUE* argv, VALUE self) {
 
 /*     def port_name */
 VALUE rb232_port_get_port_name(VALUE self) {
-    /* Get port data */
-    struct RB232_Port_Data *port_data;
-    Data_Get_Struct(self, struct RB232_Port_Data, port_data);
     /* Return baud rate */
-    return rb_str_new2(port_data->port_name);
+    return rb_str_new2(get_port_data(self)->port_name);
 }
 
 /*     def baud_rate */
 VALUE rb232_port_get_baud_rate(VALUE self) {
-    /* Get port data */
-    struct RB232_Port_Data *port_data;
-    Data_Get_Struct(self, struct RB232_Port_Data, port_data);
     /* Return baud rate */
-    return rb_uint_new(port_data->baud_rate);
+    return rb_uint_new(get_port_data(self)->baud_rate);
 }
 
 /*     def data_bits */
 VALUE rb232_port_get_data_bits(VALUE self) {
-    /* Get port data */
-    struct RB232_Port_Data *port_data;
-    Data_Get_Struct(self, struct RB232_Port_Data, port_data);
     /* Return baud rate */
-    return rb_uint_new(port_data->data_bits);
+    return rb_uint_new(get_port_data(self)->data_bits);
 }
 
 /*     def parity */
 VALUE rb232_port_get_parity(VALUE self) {
-    /* Get port data */
-    struct RB232_Port_Data *port_data;
-    Data_Get_Struct(self, struct RB232_Port_Data, port_data);
     /* Return baud rate */
-    if (port_data->parity == TRUE)
+    if (get_port_data(self)->parity == TRUE)
         return Qtrue;
     else
         return Qfalse;
@@ -123,9 +117,6 @@ VALUE rb232_port_get_parity(VALUE self) {
 
 /*     def stop_bits */
 VALUE rb232_port_get_stop_bits(VALUE self) {
-    /* Get port data */
-    struct RB232_Port_Data *port_data;
-    Data_Get_Struct(self, struct RB232_Port_Data, port_data);
     /* Return baud rate */
-    return rb_uint_new(port_data->stop_bits);
+    return rb_uint_new(get_port_data(self)->stop_bits);
 }
