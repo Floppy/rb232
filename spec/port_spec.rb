@@ -35,7 +35,7 @@ describe RB232::Port do
     it "ensures that second argument is a hash" do
       lambda {
         RB232::Port.new('/dev/ttyS0', "hello")
-      }.should raise_error(TypeError, "second argument must be a hash (port options)")
+      }.should raise_error(TypeError, "can't convert String into Hash")
     end
 
   end

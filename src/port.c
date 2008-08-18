@@ -73,17 +73,14 @@ VALUE rb232_port_initialize(int argc, VALUE* argv, VALUE self) {
         return Qnil;
     }
     /* Get port name */
-    VALUE port = StringValue(argv[0]);
+    SafeStringValue(argv[0]);
+    VALUE port = argv[0];
     /* Get options */
     VALUE options = Qnil;
     if (argc == 1)
         options = rb_hash_new();
-    else {
-        if (!rb_obj_is_kind_of(argv[1], rb_cHash))
-            rb_raise(rb_eTypeError, "second argument must be a hash (port options)");
-        else
-            options = argv[1];
-    }
+    else
+        options = rb_convert_type(argv[1], T_HASH, "Hash", "to_hash");
     /* Call real initialize function */
     return rb232_port_initialize_with_options(self, port, options);
 }
