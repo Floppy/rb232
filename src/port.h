@@ -12,6 +12,9 @@ VALUE rb232_port_alloc(VALUE klass);
 /*     def initialize(options = {}) */
 VALUE rb232_port_initialize(int argc, VALUE* argv, VALUE self);
 
+/*     def port_name */
+VALUE rb232_port_get_port_name(VALUE self);
+
 /*     def baud_rate */
 VALUE rb232_port_get_baud_rate(VALUE self);
 

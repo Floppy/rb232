@@ -11,7 +11,9 @@ describe RB232::Port do
     end
 
     it "can be created with port name only" do
-      RB232::Port.new('/dev/ttyS0').should_not be_nil
+      port = RB232::Port.new('/dev/ttyS0')
+      port.should_not be_nil
+      port.port_name.should == '/dev/ttyS0'
     end
 
     it "can be created with port name and a hash of options" do
@@ -27,7 +29,7 @@ describe RB232::Port do
     it "ensures that first argument is a string" do
       lambda {
         RB232::Port.new({})
-      }.should raise_error(TypeError, "first argument must be a string (port name)")
+      }.should raise_error(TypeError, "can't convert Hash into String")
     end
 
     it "ensures that second argument is a hash" do

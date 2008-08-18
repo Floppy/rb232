@@ -9,6 +9,7 @@ VALUE RB232_Port = Qnil;
  * Data structure for storing object data
  */
 struct RB232_Port_Data {
+    char* port_name;
     int baud_rate;
     int data_bits;
     BOOL parity;
@@ -16,12 +17,21 @@ struct RB232_Port_Data {
 };
 
 /*
+ * Port data deallocation
+ */
+VALUE rb232_port_data_free(void* p) {
+    struct RB232_Port_Data* port_data = p;
+    free(port_data->port_name);
+    free(port_data);
+}
+
+/*
  * Object allocation
  */
 VALUE rb232_port_alloc(VALUE klass) {
     struct RB232_Port_Data* port_data = malloc(sizeof(struct RB232_Port_Data)); 
     memset(port_data, 0, sizeof(struct RB232_Port_Data));
-    return Data_Wrap_Struct(klass, 0, free, port_data);
+    return Data_Wrap_Struct(klass, 0, rb232_port_data_free, port_data);
 }
 
 /*
@@ -31,6 +41,10 @@ VALUE rb232_port_initialize_with_options(VALUE self, VALUE port, VALUE options) 
     /* Get port data */
     struct RB232_Port_Data *port_data;
     Data_Get_Struct(self, struct RB232_Port_Data, port_data);
+    /* Store port name */
+    int port_name_len = RSTRING(port)->len;
+    port_data->port_name = malloc(port_name_len + 1);
+    strcpy(port_data->port_name, RSTRING(port)->ptr);
     /* Store options */
     port_data->baud_rate = rbx_int_from_hash_or_default(options, ID2SYM(rb_intern("baud_rate")), 2400);
     port_data->data_bits = rbx_int_from_hash_or_default(options, ID2SYM(rb_intern("data_bits")), 8);
@@ -53,11 +67,7 @@ VALUE rb232_port_initialize(int argc, VALUE* argv, VALUE self) {
         return Qnil;
     }
     /* Get port name */
-    VALUE port = Qnil;
-    if (!rb_obj_is_kind_of(argv[0], rb_cString))
-        rb_raise(rb_eTypeError, "first argument must be a string (port name)");
-    else
-        port = argv[0];
+    VALUE port = StringValue(argv[0]);
     /* Get options */
     VALUE options = Qnil;
     if (argc == 1)
@@ -70,6 +80,15 @@ VALUE rb232_port_initialize(int argc, VALUE* argv, VALUE self) {
     }
     /* Call real initialize function */
     return rb232_port_initialize_with_options(self, port, options);
+}
+
+/*     def port_name */
+VALUE rb232_port_get_port_name(VALUE self) {
+    /* Get port data */
+    struct RB232_Port_Data *port_data;
+    Data_Get_Struct(self, struct RB232_Port_Data, port_data);
+    /* Return baud rate */
+    return rb_str_new2(port_data->port_name);
 }
 
 /*     def baud_rate */
