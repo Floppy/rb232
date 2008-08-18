@@ -10,8 +10,7 @@ Homepage: http://github.com/Floppy/rb232
 
 == ABOUT
 
-This library is intended to become a simple serial port access library for
-Ruby. It will hopefully become a gem at some point, but it isn't there yet.
+This library is a simple serial port library for Ruby.
 
 You may ask, why not just use ruby-serialport? Mainly because the GPL license
 it is under is too restrictive for my purposes. This code is under the MIT
