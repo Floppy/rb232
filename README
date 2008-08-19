@@ -45,5 +45,10 @@ You can provide alternative settings when you create a new port:
                                     :parity => true, 
                                     :stop_bits => 2)
 
+If you are using a simple text protocol over RS232, you can use the TextProtocol
+class to help you out. It automatically monitors the port and splits messages
+up by detecting separator characters. See examples/listen.rb for an example of
+how to use this class.
+
 See http://github.com/Floppy/rb232/tree/master/spec/port_spec.rb for more
 details.
