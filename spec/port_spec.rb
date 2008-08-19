@@ -1,5 +1,7 @@
 require File.dirname(__FILE__) + '/spec_helper.rb'
 
+require 'rb232'
+
 TEST_PORT = '/dev/ttyUSB0'
 
 describe RB232::Port do
