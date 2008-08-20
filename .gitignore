@@ -3,3 +3,4 @@ nbproject
 *.o
 *.so
 coverage
+doc
