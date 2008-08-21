@@ -3,6 +3,7 @@
 
 #include <fcntl.h>
 #include <termios.h>
+#include <unistd.h>
 
 /* Module and class handles */
 VALUE RB232 = Qnil;
@@ -40,6 +41,8 @@ VALUE rb232_port_data_free(void* p) {
     /* Free memory */
     free(port_data->port_name);
     free(port_data);
+    /* Done */
+    return Qnil;
 }
 
 /*
@@ -265,6 +268,7 @@ VALUE rb232_port_read_bytes(VALUE self, VALUE count) {
     for (i=0; i<bytes_read; i++) {
         rb_ary_push(data, INT2NUM(buffer[i]));
     }
+    return data;
 }
 
 /*
