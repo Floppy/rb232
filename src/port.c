@@ -169,10 +169,14 @@ VALUE rb232_port_initialize_with_options(VALUE self, VALUE port, VALUE options) 
 }
 
 /*
- * This function implements a default argument for initialize().
- * Equivalent Ruby would be def initialize(port, options = {}).
- * This function calls the _with_options version, providing an empty
- * hash if one is not passed in.
+ * Create a Port object, using the port filename specified in _port_ (e.g. '/dev/ttyS0' or 'COM1').
+ *
+ * Valid options are :baud_rate (integer), :data_bits (integer), :parity
+ * (boolean), and :stop_bits (integer). Default values are 9600, 8, false, and 1 respectively.
+ *
+ * call-seq:
+ *   new(port, options = {})
+ *
  */
 VALUE rb232_port_initialize(int argc, VALUE* argv, VALUE self) {
     /* Only allow 1 or 2 arguments */
@@ -193,25 +197,33 @@ VALUE rb232_port_initialize(int argc, VALUE* argv, VALUE self) {
     return rb232_port_initialize_with_options(self, port, options);
 }
 
-/*     def port_name */
+/*
+ * Get the port name (for instance, '/dev/ttyS0' or 'COM1'), as set in Port#new.
+ */
 VALUE rb232_port_get_port_name(VALUE self) {
     /* Return baud rate */
     return rb_str_new2(get_port_data(self)->port_name);
 }
 
-/*     def baud_rate */
+/*
+ * Get the baud rate, as set in the _options_ argument to Port#new.
+ */
 VALUE rb232_port_get_baud_rate(VALUE self) {
     /* Return baud rate */
     return rb_uint_new(get_port_data(self)->baud_rate);
 }
 
-/*     def data_bits */
+/*
+ * Get the number of data bits, as set in the _options_ argument to Port#new.
+ */
 VALUE rb232_port_get_data_bits(VALUE self) {
     /* Return baud rate */
     return rb_uint_new(get_port_data(self)->data_bits);
 }
 
-/*     def parity */
+/*
+ * Get the parity setting, as set in the _options_ argument to Port#new.
+ */
 VALUE rb232_port_get_parity(VALUE self) {
     /* Return baud rate */
     if (get_port_data(self)->parity == TRUE)
@@ -220,13 +232,17 @@ VALUE rb232_port_get_parity(VALUE self) {
         return Qfalse;
 }
 
-/*     def stop_bits */
+/*
+ * Get the number of stop bits, as set in the _options_ argument to Port#new.
+ */
 VALUE rb232_port_get_stop_bits(VALUE self) {
     /* Return baud rate */
     return rb_uint_new(get_port_data(self)->stop_bits);
 }
 
-/* Read raw data from port */
+/* 
+ * Read raw data from port
+ */
 int rb232_port_read(VALUE self, char* buffer, VALUE count) {
     int bytes_to_read = NUM2INT(count);
     if (bytes_to_read > 255)
@@ -234,7 +250,13 @@ int rb232_port_read(VALUE self, char* buffer, VALUE count) {
     return read(get_port_data(self)->port_handle, buffer, bytes_to_read);
 }
 
-/*     def read_bytes(count) */
+/*
+ * Read _count_ raw byte values from the port.
+ * Returns an array of values. Useful for binary protocols.
+ * call-seq:
+ *   read_bytes(count)
+ *
+ */
 VALUE rb232_port_read_bytes(VALUE self, VALUE count) {
     char buffer[256];
     int bytes_read = rb232_port_read(self, buffer, count);
@@ -245,7 +267,13 @@ VALUE rb232_port_read_bytes(VALUE self, VALUE count) {
     }
 }
 
-/*     def read_string(count) */
+/*
+ * Read _count_ characters from the port.
+ * Returns a string. Useful for text-based protocols.
+ * call-seq:
+ *   read_string(count)
+ *
+ */
 VALUE rb232_port_read_string(VALUE self, VALUE count) {
     char buffer[256];
     int bytes_read = rb232_port_read(self, buffer, count);

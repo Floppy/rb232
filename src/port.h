@@ -9,26 +9,57 @@ extern VALUE RB232_Port;
 /* Allocator for Port class */
 VALUE rb232_port_alloc(VALUE klass);
 
-/*     def initialize(options = {}) */
+/*
+ * Create a Port object, using the port filename specified in _port_ (e.g. '/dev/ttyS0' or 'COM1').
+ *
+ * Valid options are :baud_rate (integer), :data_bits (integer), :parity
+ * (boolean), and :stop_bits (integer). Default values are 9600, 8, false, and 1 respectively.
+ *
+ * call-seq:
+ *   new(port, options = {})
+ *
+ */
 VALUE rb232_port_initialize(int argc, VALUE* argv, VALUE self);
 
-/*     def port_name */
+/*
+ * Get the port name (for instance, '/dev/ttyS0' or 'COM1'), as set in Port#new.
+ */
 VALUE rb232_port_get_port_name(VALUE self);
 
-/*     def baud_rate */
+/*
+ * Get the baud rate, as set in the _options_ argument to Port#new.
+ */
 VALUE rb232_port_get_baud_rate(VALUE self);
 
-/*     def data_bits */
+/*
+ * Get the number of data bits, as set in the _options_ argument to Port#new.
+ */
 VALUE rb232_port_get_data_bits(VALUE self);
 
-/*     def parity */
+/*
+ * Get the parity setting, as set in the _options_ argument to Port#new.
+ */
 VALUE rb232_port_get_parity(VALUE self);
 
-/*     def stop_bits */
+/*
+ * Get the number of stop bits, as set in the _options_ argument to Port#new.
+ */
 VALUE rb232_port_get_stop_bits(VALUE self);
 
-/*     def read_bytes(count) */
+/*
+ * Read _count_ raw byte values from the port.
+ * Returns an array of values. Useful for binary protocols.
+ * call-seq:
+ *   read_bytes(count)
+ *
+ */
 VALUE rb232_port_read_bytes(VALUE self, VALUE count);
 
-/*     def read_string(count) */
+/*
+ * Read _count_ characters from the port.
+ * Returns a string. Useful for text-based protocols.
+ * call-seq:
+ *   read_string(count)
+ *
+ */
 VALUE rb232_port_read_string(VALUE self, VALUE count);
