@@ -70,7 +70,7 @@ VALUE rb232_port_initialize_with_options(VALUE self, VALUE port, VALUE options) 
     port_data->parity = rbx_bool_from_hash_or_default(options, ID2SYM(rb_intern("parity")), FALSE);
     port_data->stop_bits = rbx_int_from_hash_or_default(options, ID2SYM(rb_intern("stop_bits")), 1);
     /* Open the serial port */
-    port_data->port_handle = open(port_data->port_name, O_RDWR | O_NOCTTY);
+    port_data->port_handle = open(port_data->port_name, O_RDWR | O_NOCTTY | O_NONBLOCK);
     if (port_data->port_handle < 0) {
         rb_raise(rb_eArgError, "couldn't open the specified port");
     }
@@ -254,8 +254,10 @@ int rb232_port_read(VALUE self, char* buffer, VALUE count) {
 }
 
 /*
- * Read _count_ raw byte values from the port.
- * Returns an array of values. Useful for binary protocols.
+ * Read up to _count_ raw byte values from the port.
+ * Returns an array of values. If no data is currently available, a zero-length
+ * array will be returned.
+ * Useful for binary protocols.
  * call-seq:
  *   read_bytes(count)
  *
@@ -272,8 +274,10 @@ VALUE rb232_port_read_bytes(VALUE self, VALUE count) {
 }
 
 /*
- * Read _count_ characters from the port.
- * Returns a string. Useful for text-based protocols.
+ * Read up to _count_ characters from the port.
+ * Returns a string. If no data is currently available, an empty string will be 
+ * returned.
+ * Useful for text-based protocols.
  * call-seq:
  *   read_string(count)
  *
@@ -281,6 +285,7 @@ VALUE rb232_port_read_bytes(VALUE self, VALUE count) {
 VALUE rb232_port_read_string(VALUE self, VALUE count) {
     char buffer[256];
     int bytes_read = rb232_port_read(self, buffer, count);
+    if (bytes_read < 1) bytes_read = 0;
     buffer[bytes_read] = 0;
     return rb_str_new2(buffer);
 }
