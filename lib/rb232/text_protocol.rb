@@ -37,13 +37,21 @@ module RB232
       @reader_thread = Thread.new {
         buffer = ""
         while (@stop == false)
-          buffer += @port.read_string(1)
-          messages = buffer.split(@separator,3)
-          if messages.size > 1
-            changed
-            notify_observers(messages[0])
-            buffer = ""
-          end
+          new_string = ""
+          # Read in as much data as possible
+          begin
+            new_string = @port.read_string(255)
+            if (new_string.size > 0)
+              buffer += new_string
+              messages = buffer.split(@separator,2)
+              if messages.size > 1
+                changed
+                notify_observers(messages[0])
+                buffer = messages[1] || ""
+              end
+            end
+          end while (new_string.size > 0 && @stop == false)
+          sleep(0.5)
         end
       }
     end
