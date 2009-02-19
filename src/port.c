@@ -126,10 +126,12 @@ VALUE rb232_port_initialize_with_options(VALUE self, VALUE port, VALUE options) 
         case 38400:
             port_data->settings.c_cflag |= B38400;
             break;
+        case 57600:
+            port_data->settings.c_cflag |= B57600;
+            break;
         default:
             rb_raise(rb_eArgError, "baud_rate must be a valid value");
     }
-    port_data->settings.c_cflag |= B9600;
     /* Data bits */
     switch (port_data->data_bits) {
         case 8:
