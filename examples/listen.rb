@@ -22,14 +22,14 @@ OptionParser.new do |opts|
     options[:port] = p
   end  
   opts.on("-b", "--baud_rate BAUD_RATE", "baud rate") do |b|
-    options[:baud_rate] = b
+    options[:baud_rate] = b.to_i
   end  
   opts.on("-s", "--separator SEPARATOR", "message separator character") do |s|
     options[:separator] = s
   end  
 end.parse!
 
-port = RB232::Port.new(options[:port], :baud_rate => options[:baud_rate])
+port = RB232::Port.new(options[:port], :baud_rate => options[:baud_rate].to_i)
 
 protocol = RB232::TextProtocol.new(port, options[:separator])
 client = SimpleClient.new
