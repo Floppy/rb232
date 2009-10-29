@@ -47,6 +47,11 @@ VALUE rb232_port_get_parity(VALUE self);
 VALUE rb232_port_get_stop_bits(VALUE self);
 
 /*
+ * Get the hardware flow control setting, as set in the _options_ argument to Port#new.
+ */
+VALUE rb232_port_get_hardware_flow_control(VALUE self);
+
+/*
  * Read _count_ raw byte values from the port.
  * Returns an array of values. Useful for binary protocols.
  * call-seq:

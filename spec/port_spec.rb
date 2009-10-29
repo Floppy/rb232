@@ -71,11 +71,15 @@ describe RB232::Port do
       @port.stop_bits.should be(1)
     end
 
+    it "should have no flow control" do
+      @port.hardware_flow_control.should be_false
+    end
+
   end
 
   describe "created with non-default options" do
     before :each do
-      @port = RB232::Port.new(TEST_PORT, :baud_rate => 19200, :data_bits => 7, :parity => true, :stop_bits => 2)
+      @port = RB232::Port.new(TEST_PORT, :baud_rate => 19200, :data_bits => 7, :parity => true, :stop_bits => 2, :hardware_flow_control => true)
     end
 
     it "should have a baud rate of 19200" do
@@ -92,6 +96,10 @@ describe RB232::Port do
 
     it "should have 2 stop bits" do
       @port.stop_bits.should be(2)
+    end
+
+    it "should have flow control" do
+      @port.hardware_flow_control.should be_true
     end
 
   end
