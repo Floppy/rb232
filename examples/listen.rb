@@ -3,6 +3,7 @@
 dir = File.dirname(__FILE__) + '/../lib'
 $LOAD_PATH << dir unless $LOAD_PATH.include?(dir)
 
+require 'rubygems'
 require 'rb232'
 require 'rb232/text_protocol'
 
