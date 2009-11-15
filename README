@@ -30,8 +30,8 @@ license, so you can do anything you like with it.
 == STATUS
 
 Currently you can read from a serial port, but not write back. The code is only 
-tested on Linux - other unixes *may* work, Mac OSX *might* be ok, but Windows
-is right out for now. Watch this space for further developments!
+tested on Linux and Snow Leopard - other unixes *may* work, but Windows is right
+ out for now. Watch this space for further developments!
 
 == USAGE
 
@@ -48,6 +48,8 @@ You can provide alternative settings when you create a new port:
                                     :parity => true, 
                                     :stop_bits => 2,
                                     :hardware_flow_control => true)
+
+Note that OSX doesn't currently have hardware flow control support.
 
 See http://github.com/Floppy/rb232/tree/master/spec/port_spec.rb or RB232::Port
 documentation for more details.

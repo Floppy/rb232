@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name = "rb232"
-  s.version = "0.2.5"
+  s.version = "0.3.0"
   s.date = "2009-11-15"
   s.summary = "A simple serial port library for Ruby"
   s.email = "james@floppy.org.uk"
