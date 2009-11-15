@@ -20,11 +20,12 @@ license, so you can do anything you like with it.
 
 == INSTALLATION
 
-1) Enable gems from github, if you haven't already done so (rubygems >= 1.2):
-    > sudo gem sources -a http://gems.github.com
+1) Enable gems from gemcutter, if you haven't already done so:
+    > sudo gem install gemcutter
+    > sudo gem tumble
 
 2) Install gem
-    > sudo gem install Floppy-rb232
+    > sudo gem install rb232
 
 == STATUS
 
