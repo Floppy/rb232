@@ -19,6 +19,7 @@ struct RB232_Port_Data {
     int data_bits;
     BOOL parity;
     int stop_bits;
+    BOOL hardware_flow_control;
     /* Internals */
     int port_handle;
     struct termios settings;
@@ -69,6 +70,7 @@ VALUE rb232_port_initialize_with_options(VALUE self, VALUE port, VALUE options) 
     port_data->data_bits = rbx_int_from_hash_or_default(options, ID2SYM(rb_intern("data_bits")), 8);
     port_data->parity = rbx_bool_from_hash_or_default(options, ID2SYM(rb_intern("parity")), FALSE);
     port_data->stop_bits = rbx_int_from_hash_or_default(options, ID2SYM(rb_intern("stop_bits")), 1);
+    port_data->hardware_flow_control = rbx_bool_from_hash_or_default(options, ID2SYM(rb_intern("hardware_flow_control")), FALSE);
     /* Open the serial port */
     port_data->port_handle = open(port_data->port_name, O_RDWR | O_NOCTTY | O_NONBLOCK);
     if (port_data->port_handle < 0) {
@@ -164,6 +166,8 @@ VALUE rb232_port_initialize_with_options(VALUE self, VALUE port, VALUE options) 
         default:
             rb_raise(rb_eArgError, "stop_bits must be 1 or 2");
     }
+    /* Flow control */
+    if (port_data->hardware_flow_control) port_data->settings.c_cflag |= CNEW_RTSCTS;
     /* Other settings */
     port_data->settings.c_iflag = IGNPAR | ICRNL;
     port_data->settings.c_oflag = 0;
@@ -233,7 +237,7 @@ VALUE rb232_port_get_data_bits(VALUE self) {
  * Get the parity setting, as set in the _options_ argument to Port#new.
  */
 VALUE rb232_port_get_parity(VALUE self) {
-    /* Return baud rate */
+    /* Return parity setting */
     if (get_port_data(self)->parity == TRUE)
         return Qtrue;
     else
@@ -246,6 +250,17 @@ VALUE rb232_port_get_parity(VALUE self) {
 VALUE rb232_port_get_stop_bits(VALUE self) {
     /* Return baud rate */
     return rb_uint_new(get_port_data(self)->stop_bits);
+}
+
+/*
+ * Get the hardware flow control setting, as set in the _options_ argument to Port#new.
+ */
+VALUE rb232_port_get_hardware_flow_control(VALUE self) {
+    /* Return flow control setting */
+    if (get_port_data(self)->hardware_flow_control == TRUE)
+        return Qtrue;
+    else
+        return Qfalse;
 }
 
 /* 

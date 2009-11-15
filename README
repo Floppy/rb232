@@ -20,11 +20,12 @@ license, so you can do anything you like with it.
 
 == INSTALLATION
 
-1) Enable gems from github, if you haven't already done so (rubygems >= 1.2):
-    > sudo gem sources -a http://gems.github.com
+1) Enable gems from gemcutter, if you haven't already done so:
+    > sudo gem install gemcutter
+    > sudo gem tumble
 
 2) Install gem
-    > sudo gem install Floppy-rb232
+    > sudo gem install rb232
 
 == STATUS
 
@@ -35,7 +36,7 @@ is right out for now. Watch this space for further developments!
 == USAGE
 
 The following code will read a 10-character string from the specified port,
-using the default port settings (9600/8/n/1)
+using the default port settings (9600/8/n/1/no flow control)
 
       @port = RB232::Port.new('/dev/ttyUSB0')
       message = @port.read_string(10)
@@ -45,7 +46,8 @@ You can provide alternative settings when you create a new port:
       RB232::Port.new('/dev/ttyS0', :baud_rate => 19200, 
                                     :data_bits => 7, 
                                     :parity => true, 
-                                    :stop_bits => 2)
+                                    :stop_bits => 2,
+                                    :hardware_flow_control => true)
 
 See http://github.com/Floppy/rb232/tree/master/spec/port_spec.rb or RB232::Port
 documentation for more details.
