@@ -75,63 +75,66 @@ VALUE rb232_port_initialize_with_options(VALUE self, VALUE port, VALUE options) 
         rb_raise(rb_eArgError, "couldn't open the specified port");
     }
     /* Set port settings */
+	cfmakeraw(&(port_data->settings));
     port_data->settings.c_cflag = CRTSCTS | CLOCAL | CREAD;
     /* Baud rate */
+	speed_t speed = B0;
     switch (port_data->baud_rate) {
         case 0:
-            port_data->settings.c_cflag |= B0;
+            speed = B0;
             break;
         case 50:
-            port_data->settings.c_cflag |= B50;
+            speed = B50;
             break;
         case 75:
-            port_data->settings.c_cflag |= B75;
+            speed = B75;
             break;
         case 110:
-            port_data->settings.c_cflag |= B110;
+            speed = B110;
             break;
         case 134:
-            port_data->settings.c_cflag |= B134;
+            speed = B134;
             break;
         case 150:
-            port_data->settings.c_cflag |= B150;
+            speed = B150;
             break;
         case 200:
-            port_data->settings.c_cflag |= B200;
+            speed = B200;
             break;
         case 300:
-            port_data->settings.c_cflag |= B300;
+            speed = B300;
             break;
         case 600:
-            port_data->settings.c_cflag |= B600;
+            speed = B600;
             break;
         case 1200:
-            port_data->settings.c_cflag |= B1200;
+            speed = B1200;
             break;
         case 1800:
-            port_data->settings.c_cflag |= B1800;
+            speed = B1800;
             break;
         case 2400:
-            port_data->settings.c_cflag |= B2400;
+            speed = B2400;
             break;
         case 4800:
-            port_data->settings.c_cflag |= B4800;
+            speed = B4800;
             break;
         case 9600:
-            port_data->settings.c_cflag |= B9600;
+            speed = B9600;
             break;
         case 19200:
-            port_data->settings.c_cflag |= B19200;
+            speed = B19200;
             break;
         case 38400:
-            port_data->settings.c_cflag |= B38400;
+            speed = B38400;
             break;
         case 57600:
-            port_data->settings.c_cflag |= B57600;
+            speed = B57600;
             break;
         default:
             rb_raise(rb_eArgError, "baud_rate must be a valid value");
     }
+  	cfsetspeed(&(port_data->settings), speed);
     /* Data bits */
     switch (port_data->data_bits) {
         case 8:
@@ -148,7 +151,7 @@ VALUE rb232_port_initialize_with_options(VALUE self, VALUE port, VALUE options) 
             break;
         default:
             rb_raise(rb_eArgError, "data_bits must be 5, 6, 7 or 8");
-    }    
+    }	
     /* Parity */
     if (port_data->parity) port_data->settings.c_cflag |= PARENB;
     /* Stop bits */
@@ -286,6 +289,7 @@ VALUE rb232_port_read_bytes(VALUE self, VALUE count) {
  */
 VALUE rb232_port_read_string(VALUE self, VALUE count) {
     char buffer[256];
+    memset(buffer, 0, 256);
     int bytes_read = rb232_port_read(self, buffer, count);
     if (bytes_read < 1) bytes_read = 0;
     buffer[bytes_read] = 0;
