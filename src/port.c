@@ -166,8 +166,10 @@ VALUE rb232_port_initialize_with_options(VALUE self, VALUE port, VALUE options) 
         default:
             rb_raise(rb_eArgError, "stop_bits must be 1 or 2");
     }
+#ifdef CNEW_RTSCTS
     /* Flow control */
     if (port_data->hardware_flow_control) port_data->settings.c_cflag |= CNEW_RTSCTS;
+#endif
     /* Other settings */
     port_data->settings.c_iflag = IGNPAR | ICRNL;
     port_data->settings.c_oflag = 0;
