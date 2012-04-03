@@ -4,6 +4,7 @@
 #include <fcntl.h>
 #include <termios.h>
 #include <unistd.h>
+#include <errno.h>
 
 /* Module and class handles */
 VALUE RB232 = Qnil;
@@ -308,7 +309,12 @@ VALUE rb232_port_read_string(VALUE self, VALUE count) {
     char buffer[256];
     memset(buffer, 0, 256);
     int bytes_read = rb232_port_read(self, buffer, count);
-    if (bytes_read < 1) bytes_read = 0;
+    if (bytes_read < 0) {
+        if (errno != EAGAIN)
+            printf("%d: %s\n", errno, strerror(errno));
+        bytes_read = 0;
+    }
+    // Null terminate the string
     buffer[bytes_read] = 0;
     return rb_str_new2(buffer);
 }
